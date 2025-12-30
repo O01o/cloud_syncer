@@ -39,4 +39,11 @@ def push_tree(local_path: str, upload_path: str):
 
 def pull(local_path: str, upload_path: str):
     assert _bucket_name is not None, "bucket_name must be initialized"
+    s3_path = f"s3://{_bucket_name}/{upload_path}/"
+    s3_sync_command = [
+        "aws", "s3", "sync", 
+        s3_path, local_path, 
+        "--delete"
+    ]
+    subprocess.run(s3_sync_command, check=True)
 
