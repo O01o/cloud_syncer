@@ -11,13 +11,14 @@ def init_bucket(bucket_name: str):
     global _bucket_name
     _bucket_name = bucket_name
 
-def push(local_path: str, upload_path: str, encryption: bool):
+def push(local_path: str, upload_path: str, archive_mode: bool, encryption: bool):
     assert _bucket_name is not None, "bucket_name must be initialized"
     s3_path = f"s3://{_bucket_name}/{upload_path}/"
+    storage_class = "DEEP_ARCHIVE" if archive_mode else "STANDARD_IA"
     s3_sync_command = [
         "aws", "s3", "sync", 
         local_path, s3_path, 
-        "--storage-class", "STANDARD_IA",
+        "--storage-class", storage_class,
         "--delete"
     ]
     subprocess.run(s3_sync_command, check=True)
